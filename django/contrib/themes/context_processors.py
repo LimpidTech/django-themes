@@ -1,5 +1,5 @@
 from django.http import Http404
-from boundless.django.themes.models import Theme
+from models import Theme
 
 def _default_theme():
     try:

@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
-from boundless.django.themes.models import Theme
+from django.contrib.themes.models import Theme
 
 def set(request, identifier, slugified=False):
     if slugified == True:
