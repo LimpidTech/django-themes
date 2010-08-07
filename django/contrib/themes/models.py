@@ -13,6 +13,11 @@ theme_directories = {
 if hasattr(settings, 'THEME_MEDIA_DIRS'):
     theme_directories.update(settings.THEME_MEDIA_DIRS)
 
+if hasattr(settings, 'THEME_URL'):
+    theme_url = settings.theme_url
+else:
+    theme_url = 'themes'
+
 class ThemeOverride(models.Model):
     """ Used to override a theme's settings in the database. """
     name = models.CharField(max_length=16)
@@ -30,7 +35,7 @@ class Theme(models.Model):
     default = models.BooleanField(default=False)
 
     def base_url(self):
-        return '%s/%s' % (THEME_URL, self.directory)
+        return '%s/%s' % (theme_url, self.directory)
 
     def media_url(self, media_type):
         media_dir = media_type
@@ -54,6 +59,16 @@ class Theme(models.Model):
 
         self.dir_name = slugify(self.name).lower()
         super(Theme,self).save(force_insert, force_update)
+
+    def __getattr__(self, name):
+
+        # Checks if any attributes retrieved end with _url...
+        if name.endswith('_url'):
+            # ...and calls self.media_url with the 'name' stripped
+            # of it's last four characters (_url)
+            return self.media_url(name[:-4])
+        else:
+            return super(Theme, self).__getattr__(name)
 
     def __unicode__(self):
         return self.name
