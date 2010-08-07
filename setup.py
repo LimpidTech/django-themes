@@ -2,7 +2,7 @@
 from distutils.core import setup
 
 setup(name='django-themes',
-      version='0.1',
+      version='0.6',
       description='A powerful application that can be used to develop themes to completely reskin your django apps.',
       author='Brandon R. Stoner',
       author_email='monokrome@monokro.me',
