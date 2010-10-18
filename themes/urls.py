@@ -7,6 +7,6 @@ else:
     DEFAULT_THEME = 'default'
 
 urlpatterns = patterns('',
-    url(r'^set/(?P<identifier>[\d^/]+)/$', 'django.contrib.themes.views.set'),
-    url(r'^set/(?P<identifier>[^/]+)/$', 'django.contrib.themes.views.set', {'slugified': True}),
+    url(r'^set/(?P<identifier>[\d^/]+)/$', 'themes.views.set'),
+    url(r'^set/(?P<identifier>[^/]+)/$', 'themes.views.set', {'slugified': True}),
 )

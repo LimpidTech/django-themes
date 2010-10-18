@@ -6,10 +6,10 @@ by storing a Theme model that contains a name for your theme and it's related
 directory. You can then access the list of themes and the current theme through
 these custom context_processors:
 
-- django.contrib.themes.context_processors.list
+- themes.context_processors.list
     Gets the complete theme list and sets it to a context variable, theme_list
 
-- django.contrib.themes.context_processors.current
+- themes.context_processors.current
     Gets the current theme and sets it to a context variable, current_theme
 
 Future developments:
