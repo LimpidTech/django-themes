@@ -51,14 +51,14 @@ class Theme(models.Model):
 
         return '%s/%s' % (self.base_url(), media_type)
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         if self.default == True:
             for theme in Theme.objects.all():
                 theme.default = False
                 theme.save()
 
         self.dir_name = slugify(self.name).lower()
-        super(Theme,self).save(force_insert, force_update)
+        super(Theme,self).save(*args, **kwargs)
 
     def __getattr__(self, name):
 
