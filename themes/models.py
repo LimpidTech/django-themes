@@ -37,8 +37,8 @@ class Theme(models.Model):
 
     name = models.CharField(max_length=32)
     directory = models.SlugField(max_length=32, null=True, blank=True)
-    sites_enabled = models.ManyToManyField(Site, related_name='sites_enabled', blank=True)
-    sites_available = models.ManyToManyField(Site, related_name='sites_available', blank=True)
+    sites_enabled = models.ManyToManyField(Site, related_name='enabled_themes', blank=True)
+    sites_available = models.ManyToManyField(Site, related_name='available_themes', blank=True)
 
     objects = ThemeManager()
 
