@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
 from django.template.defaultfilters import slugify
+from django.contrib.sites.models import Site
+from themes.managers import ThemeManager
+import pdb
 
 # This is a default mapping used when there are no overrides present
 # in the database or in settings
@@ -20,6 +23,7 @@ else:
 
 class ThemeOverride(models.Model):
     """ Used to override a theme's settings in the database. """
+
     name = models.CharField(max_length=16)
     directory = models.CharField(max_length=16)
     theme = models.ForeignKey('Theme')
@@ -30,9 +34,13 @@ class ThemeOverride(models.Model):
 class Theme(models.Model):
     """ Represents a theme (aka skin) that can be applied to your
         django application. """
+
     name = models.CharField(max_length=32)
     directory = models.SlugField(max_length=32, null=True, blank=True)
-    default = models.BooleanField(default=False)
+    sites_enabled = models.ManyToManyField(Site, related_name='sites_enabled', blank=True)
+    sites_available = models.ManyToManyField(Site, related_name='sites_available', blank=True)
+
+    objects = ThemeManager()
 
     def base_url(self):
         return '%s/%s' % (theme_url, self.directory)
@@ -51,14 +59,31 @@ class Theme(models.Model):
 
         return '%s/%s' % (self.base_url(), media_type)
 
-    def save(self, force_insert=False, force_update=False):
-        if self.default == True:
-            for theme in Theme.objects.all():
-                theme.default = False
-                theme.save()
+    def save(self, *args, **kwargs):
+        # TODO: Validate that we don't have multiple defaults
 
-        self.dir_name = slugify(self.name).lower()
-        super(Theme,self).save(force_insert, force_update)
+        if self.directory is None:
+            self.directory = slugify(self.name).lower()
+
+        pdb.set_trace()
+
+#        super(Theme,self).save(*args, **kwargs)
+
+        for site in self.sites_enabled.all():
+            offending_themes = list(Theme.objects.filter(sites_enabled=site))
+            offending_themes.remove(self)
+
+            print offending_themes
+
+            if len(offending_themes) != 0:
+                for theme in offending_themes:
+                    new_sites_enabled = list(theme.sites_enabled.all())
+                    new_sites_enabled.remove(site)
+
+                    print new_sites_enabled
+
+                    theme.sites_available = new_sites_enabled
+                    theme.save()
 
     def __getattr__(self, name):
 
@@ -68,7 +93,7 @@ class Theme(models.Model):
             # of it's last four characters (_url)
             return self.media_url(name[:-4])
         else:
-            return super(Theme, self).__getattr__(name)
+            return getattr(super(Theme, self), name)
 
     def __unicode__(self):
         return self.name
