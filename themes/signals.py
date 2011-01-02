@@ -1,10 +1,12 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import m2m_changed
+from django.contrib.sites.models import Site
 from django.dispatch import receiver
 from themes.models import Theme
 
-@receiver(post_save, sender=Theme)
+@receiver(m2m_changed, sender=Theme.sites_enabled.through)
 def post_save_handler(sender, instance, **kwargs):
-    for site in instance.sites_enabled.all():
-        site.enabled_themes = [instance]
-        site.save()
+    if instance.__class__ is Theme:
+        for site in Site.objects.filter(enabled_themes=instance):
+            site.enabled_themes = [instance]
+            site.save()
 
