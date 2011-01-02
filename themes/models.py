@@ -60,30 +60,10 @@ class Theme(models.Model):
         return '%s/%s' % (self.base_url(), media_type)
 
     def save(self, *args, **kwargs):
-        # TODO: Validate that we don't have multiple defaults
-
         if self.directory is None:
             self.directory = slugify(self.name).lower()
 
-        pdb.set_trace()
-
-#        super(Theme,self).save(*args, **kwargs)
-
-        for site in self.sites_enabled.all():
-            offending_themes = list(Theme.objects.filter(sites_enabled=site))
-            offending_themes.remove(self)
-
-            print offending_themes
-
-            if len(offending_themes) != 0:
-                for theme in offending_themes:
-                    new_sites_enabled = list(theme.sites_enabled.all())
-                    new_sites_enabled.remove(site)
-
-                    print new_sites_enabled
-
-                    theme.sites_available = new_sites_enabled
-                    theme.save()
+        super(Theme, self).save(*args, **kwargs)
 
     def __getattr__(self, name):
 
