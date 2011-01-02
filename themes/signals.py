@@ -8,9 +8,4 @@ def post_save_handler(sender, instance, **kwargs):
         offending_themes = Theme.objects.filter(sites_enabled=site)
 
         for theme in offending_themes:
-            enabled_sites = list(theme.sites_enabled.all())
-            enabled_sites.remove(site)
-
-            theme.sites_enabled = enabled_sites
-            theme.save()
-
+            theme.sites_enabled.delete(site)
