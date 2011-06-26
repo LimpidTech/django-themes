@@ -1,2 +1,16 @@
+# Python cache files
 *.pyc
+
+# Virtual environment files
+bin/*
+lib/*
+include/*
+
+# Files built by pip
+build/*
+
+# Distutils files
+dist/*
+*.egg-info
+MANIFEST
 
