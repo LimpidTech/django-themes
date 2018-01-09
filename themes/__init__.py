@@ -1,2 +1,0 @@
-from themes import signals
-

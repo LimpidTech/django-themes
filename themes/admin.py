@@ -1,5 +1,6 @@
 from django.contrib import admin
-from models import Theme
 
-admin.site.register(Theme)
+from themes import models
+
+admin.site.register(models.Theme)
 

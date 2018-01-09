@@ -1,14 +1,16 @@
-from django.contrib.sites.models import Site
+from django.contrib.sites import models as site_models
 from django.db import models
 
-def _get_current_site(request):
-        # Attempts to use monodjango.middleware.SiteProviderMiddleware
-        try:
-            current_site = Site.objects.get_current(request)
-        except TypeError:
-            current_site = Site.objects.get_current()
 
-        return current_site
+def _get_current_site(request):
+    # Attempts to use monodjango.middleware.SiteProviderMiddleware
+    try:
+        return Site.objects.get_current(request)
+    except TypeError:
+        pass
+
+    return Site.objects.get_current()
+
 
 class ThemeManager(models.Manager):
     def get_current_by_request(self, request=None):
@@ -39,4 +41,3 @@ class ThemeManager(models.Manager):
 
     def get_default(self):
             return self.get(default=True)
-
